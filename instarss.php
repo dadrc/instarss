@@ -28,14 +28,7 @@ printf(
     "<?xml version='1.0' encoding='UTF-8'?><rss version='2.0'><channel><title>Instagram feed for %s</title>\n",
     $object->graphql->user->full_name
 );
-
-foreach ($object->graphql->user->edge_owner_to_timeline_media->edges as $edge) {
-    $caption = '';
-    if (count($edge->node->edge_media_to_caption->edges) > 0) {
-        $caption = $edge->node->edge_media_to_caption->edges[0]->node->text;
-    }
-
-    $item = <<<'EOT'
+$item = <<<'EOT'
 <item>
     <pubDate>%s</pubDate>
     <title>Picture %s</title>
@@ -44,8 +37,15 @@ foreach ($object->graphql->user->edge_owner_to_timeline_media->edges as $edge) {
     <description>
         <![CDATA[<img src="%s" alt="%s" /><br />%s]]>
     </description>
-</item>\n
+</item>
 EOT;
+
+foreach ($object->graphql->user->edge_owner_to_timeline_media->edges as $edge) {
+    $caption = '';
+    if (count($edge->node->edge_media_to_caption->edges) > 0) {
+        $caption = $edge->node->edge_media_to_caption->edges[0]->node->text;
+    }
+
     printf(
         $item,
         date('r', $edge->node->taken_at_timestamp),
