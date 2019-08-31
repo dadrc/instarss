@@ -29,10 +29,10 @@ printf(
     $object->graphql->user->full_name
 );
 
-foreach ($object->graphql->user->edge_owner_to_timeline_media->edges as $node) {
+foreach ($object->graphql->user->edge_owner_to_timeline_media->edges as $edge) {
     $caption = '';
-    if (count($node->node->edge_media_to_caption->edges) > 0) {
-        $caption = $node->node->edge_media_to_caption->edges[0]->node->text;
+    if (count($edge->node->edge_media_to_caption->edges) > 0) {
+        $caption = $edge->node->edge_media_to_caption->edges[0]->node->text;
     }
 
     $item = <<<'EOT'
@@ -48,12 +48,12 @@ foreach ($object->graphql->user->edge_owner_to_timeline_media->edges as $node) {
 EOT;
     printf(
         $item,
-        date('r', $node->node->taken_at_timestamp),
-        $node->node->id,
-        $node->node->id,
-        $node->node->shortcode,
-        $node->node->display_url,
-        $node->node->accessibility_caption,
+        date('r', $edge->node->taken_at_timestamp),
+        $edge->node->id,
+        $edge->node->id,
+        $edge->node->shortcode,
+        $edge->node->display_url,
+        $edge->node->accessibility_caption,
         $caption
     );
 }
